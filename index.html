@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscador de Noticias</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="" href="er.css">
+</head>
+<body>
+    <h1>Benebolente dictador de Noticias</h1>
+    <form method="post">
+        <input type="text" name="query" placeholder="Buscar..." required>
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if resultado %}
+        <h2>Resultado:</h2>
+        <p>{{ resultado }}</p>
+    {% endif %}
+    
+<script>
+    const form = document.getElementById("formulario");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); // evita que recargue la página
+
+      const nombre = document.getElementById("nombre").value;
+
+      fetch("http://127.0.0.1:5000/enviar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nombre: nombre }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("respuesta").textContent = data.respuesta;
+      })
+      .catch(err => console.error("Error:", err));
+    });
+  </script>
+</body>
+</html>
