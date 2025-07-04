@@ -5,9 +5,9 @@ Esta función utiliza el servicio newsapi para obtener una lista de noticias.
 La función obtiene solo las noticias para Uruguay y las devuelve en una lista
 Cada noticia contiene los primeros 200 caracters de la noticia completa.
 '''
-def get_news(apikey):
+def get_news(apikey, query):
     # Parámetros de consulta
-    params = {'q': "uruguay",'apiKey': apikey, "language":"e" "s"}
+    params = {'q': query,'apiKey': apikey, "language":"e" "s"}
     response = requests.get("https://newsapi.org/v2/everything", params=params)
     # Obtiene los artículos del json
     articles = response.json()['articles']
@@ -16,11 +16,6 @@ def get_news(apikey):
     for article in articles:
         news.append(article['description'])
     return news
-
-news = get_news(apikey = "89da03c33cb240e7bcc79df0b4068416")
-noticias = ['el lunes el presidente anuncio nuevas medidas economicas',
-'el presidente de usa dijo que la economía mundial enfrenta desafios',
-'la selección se enfrenta con el equipo que gano en la jornada del pasado lunes']
 
 def normalizar(string: str): #Declara la función normalizar, que toma un argumento string
     reemplazos = { #reemplazos es un dict qué contiene cada vocal con tílde y su correspondiente sin tílde, para faclitar el remplazar estas letras
@@ -40,8 +35,6 @@ def normalizar(string: str): #Declara la función normalizar, que toma un argume
                 stringNormalizado += s #Si la letra no es una vocal con tílde, solamente agrega esta letra a stringNormalizado
 
     return stringNormalizado #Devuelve el string
-
-#noticias = [normalizar(n) for n in news]
 
 def getTF(noticia, termino):
     noticia = normalizar(noticia).split(' ')
@@ -79,21 +72,23 @@ def puntuaciones(noticias):
     return puntos
 
 def buscar():
+    busqueda = input('Busqueda: ')
+    query = normalizar(busqueda)
+    news = get_news("89da03c33cb240e7bcc79df0b4068416", query)
+    noticias = [normalizar(n) for n in news]
     puntos = puntuaciones(noticias)
-    busq = input('Busqueda: ')
-    busqueda = normalizar(busq)
 
     maxPuntos = float('-Infinity')
     for noticia in puntos.keys():
         puntosPorDict = 0
-        for palabra in busqueda.split(' '):
+        for palabra in query.split(' '):
             if palabra in puntos[noticia]:
                 puntosPorDict += puntos[noticia][palabra]
         if puntosPorDict > maxPuntos:
             maxNoticia = noticia
             maxPuntos = puntosPorDict
 
-    print(f'La noticia \033[34m\"{maxNoticia}\"\033[0m es el mejor resultado para la busqueda \033[33m\"{busq}\"\033[0m')
+    print(f'La noticia \033[34m\"{maxNoticia}\"\033[0m es el mejor resultado para la busqueda \033[33m\"{busqueda}\"\033[0m')
     return maxNoticia
 
 buscar()
