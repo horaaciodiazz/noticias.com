@@ -11,7 +11,7 @@ def get_news(apikey, query):
     params = {'q': query,'apiKey': apikey, "language":"e" "s"}
     response = requests.get("https://newsapi.org/v2/everything", params=params)
     # Obtiene los artículos del json
-    try
+    
     articles = response.json()['articles']
     news = []
     # Toma la descripción de cada noticia
