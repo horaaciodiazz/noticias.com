@@ -1,5 +1,6 @@
 import requests, math
-
+with open('stopwords-es.txt', 'r', encoding='utf-8') as archivo:
+    pirrelevante = [linea.strip() for linea in archivo]
 '''
 Esta función utiliza el servicio newsapi para obtener una lista de noticias.
 La función obtiene solo las noticias para Uruguay y las devuelve en una lista
@@ -38,6 +39,9 @@ def normalizar(string: str): #Declara la función normalizar, que toma un argume
 
 def getTF(noticia, termino):
     noticia = normalizar(noticia).split(' ')
+    for i in noticia:
+        if i in pirrelevante:
+            noticia.remove(i)
     return noticia.count(termino) / len(noticia)
 
 def allTFs(noticias):
